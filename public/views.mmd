@@ -1,0 +1,47 @@
+flowchart LR
+    A[layout] --> admin[admin]
+    A --> counselor[counselor]
+    A --> assistant[assistant]
+    A --> visitor[visitor]
+    A --> student[student]
+    %% admin -- 中心管理员
+    subgraph admin
+        direction LR
+        B[中心管理员] --> H[预约管理] --> L[初访预约审核]
+        H --> M[初访预约记录]
+        B --> U[用户管理]
+        B --> V[问卷管理] --> W[问卷列表]
+        V --> X[问题列表]
+        B --> Z[咨询管理] --> AA[统计分析]
+    end
+    %% counselor -- 咨询师
+    subgraph counselor
+        direction LR
+        C[咨询师] --> K[咨询管理] --> S[个人咨询记录]
+        K --> T[咨询结案报告]
+        C --> N[值班时间]
+    end
+    %% assistant -- 咨询助理
+    subgraph assistant
+        direction LR
+        D[咨询助理] --> J[咨询管理] --> P[咨询预约审核]
+        J --> R[咨询安排记录]
+    end
+    %% visitor -- 初访员
+    subgraph visitor
+        direction LR
+        E[初访员] --> I[初访记录]
+        E --> O[值班时间]
+    end
+    %% student -- 学生
+    subgraph student
+        direction LR
+        F[学生] --> G[预约管理] --> Q[预约记录]
+        G --> Y[初访预约]
+    end
+    %% settings
+    admin --> BB[设置]
+    counselor --> BB
+    assistant --> BB
+    visitor --> BB
+    student --> BB
