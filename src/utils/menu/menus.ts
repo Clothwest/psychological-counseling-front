@@ -34,10 +34,6 @@ export const adminMenus: MenuItem[] = [
     ]
   },
   {
-    path: '/admin/user-management',
-    label: '用户管理',
-  },
-  {
     path: '/admin/consultation-management',
     label: '咨询管理',
     children: [
@@ -46,6 +42,10 @@ export const adminMenus: MenuItem[] = [
             label: '统计分析',
         },
     ]
+  },
+  {
+    path: '/admin/user-management',
+    label: '用户管理',
   },
   {
     path: '/admin/admin-settings',

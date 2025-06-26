@@ -5,7 +5,8 @@ import { adminMenus, counselorMenus, assistantMenus, visitorMenus, studentMenus 
 
 const router = useRouter()
 const route = useRoute()
-const activeMenu = ref('/' + (route.path.split('/')[1] || 'home'))
+const activeMenu = ref(route.path)
+const openMenus = ref([])
 const user = ref(JSON.parse(localStorage.getItem('user') || 'null'))
 const menus = computed(() => {
   if (!user.value || !user.value.role) return []
@@ -29,9 +30,21 @@ function onMenuSelect(path) {
   router.push(path)
 }
 
-watch(() => route.path, (val) => {
-  activeMenu.value = '/' + (val.split('/')[1] || 'home')
-})
+watch(
+  () => route.path,
+  (fullPath) => {
+    activeMenu.value = fullPath
+
+    // 从 /parent/child/... 中取出父级 '/parent'
+    const segments = fullPath.split('/')
+    if (segments.length > 1 && segments[1]) {
+      openMenus.value = ['/' + segments[1]]
+    } else {
+      openMenus.value = []
+    }
+  },
+  { immediate: true }
+)
 
 </script>
 
@@ -47,7 +60,7 @@ watch(() => route.path, (val) => {
     <el-container class="main-area">
       <!-- 侧边栏 -->
       <el-aside class="sidebar">
-        <el-menu :default-active="activeMenu" router unique-opened class="sidebar-menu">
+        <el-menu router :default-active="activeMenu" :default-openeds="openMenus" unique-opened class="sidebar-menu">
           <template v-for="item in menus" :key="item.path">
             <el-sub-menu v-if="item.children" :index="item.path">
               <template #title>
@@ -57,7 +70,7 @@ watch(() => route.path, (val) => {
                 {{ child.label }}
               </el-menu-item>
             </el-sub-menu>
-            <!-- 无 children 渲染为单条菜单 -->
+
             <el-menu-item v-else :index="item.path">
               <span>{{ item.label }}</span>
             </el-menu-item>

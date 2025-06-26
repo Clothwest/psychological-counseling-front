@@ -1,10 +1,16 @@
 import axios from "axios"
-import router from "@/router"
 
 const instance = axios.create()
 
 instance.interceptors.request.use(
     config => {
+        if (localStorage.getItem('user')) {
+            const user = JSON.parse(localStorage.getItem('user'))
+            if (user && user.token) {
+                config.headers['Authorization'] = `Bearer ${user.token}`
+            }
+        }
+        // console.info("data:", config.data)
         return config
     },
     error => {
@@ -14,7 +20,7 @@ instance.interceptors.request.use(
 
 instance.interceptors.response.use(
     result => {
-        return result
+        return result.data
     },
     error => {
         return Promise.reject(error)

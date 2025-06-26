@@ -1,19 +1,40 @@
-<script setup lang="ts">
+<script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { loginRequest } from '@/utils/interceptor/request'
+import { ElMessage } from 'element-plus'
 
-const username = ref('')
-const password = ref('')
-const role = ref('')
+const username = ref('admin')
+const password = ref('1')
+const role = ref('admin')
 const router = useRouter()
 
 function onLogin() {
-  if (/*!username.value || !password.value ||*/ !role.value) {
+  if (!username.value || !password.value || !role.value) {
     return
   }
+  loginRequest({
+    username: username.value,
+    password: password.value
+  }).then(res => {
+    if (res.code === 200 && res.data.userInfo.role.toLowerCase() === role.value) {
+      // 登录成功，保存用户信息并跳转
+      localStorage.setItem('user', JSON.stringify({
+        username: username.value,
+        role: role.value,
+        token: res.data.token
+      }))
+      router.push('/' + role.value)
+    } else {
+      // 登录失败，显示错误信息
+      ElMessage.error(res.message || '登录失败，请重试')
+    }
+  }).catch(error => {
+    ElMessage.error('登录请求失败，请稍后再试')
+  })
   // 实际应调用后端接口，这里直接模拟
-  localStorage.setItem('user', JSON.stringify({ username: username.value, role: role.value }))
-  router.push('/' + role.value)
+  // localStorage.setItem('user', JSON.stringify({ username: username.value, role: role.value }))
+  // router.push('/' + role.value)
 }
 
 </script>

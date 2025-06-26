@@ -9,12 +9,17 @@ const router = createRouter({
       component: () => import('@/views/Test.vue'),
     },
     {
+      path: '/',
+      redirect: '/login'
+    },
+    {
       path: '/login',
       name: 'Login',
       component: () => import('@/views/Login.vue'),
     },
     {
       path: '/admin',
+      redirect: '/admin/initial-visit-appointment-approval',
       component: () => import('@/views/Layout.vue'),
       children: [
         {
@@ -56,6 +61,7 @@ const router = createRouter({
     },
     {
       path: '/counselor',
+      redirect: '/counselor/consultation-closure-report',
       component: () => import('@/views/Layout.vue'),
       children: [
         {
@@ -82,6 +88,7 @@ const router = createRouter({
     },
     {
       path: '/assistant',
+      redirect: '/assistant/consultation-appointment-approval',
       component: () => import('@/views/Layout.vue'),
       children: [
         {
@@ -103,6 +110,7 @@ const router = createRouter({
     },
     {
       path: '/visitor',
+      redirect: '/visitor/duty-hours',
       component: () => import('@/views/Layout.vue'),
       children: [
         {
@@ -124,6 +132,7 @@ const router = createRouter({
     },
     {
       path: '/student',
+      redirect: '/student/appointment-records',
       component: () => import('@/views/Layout.vue'),
       children: [
         {
