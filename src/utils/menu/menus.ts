@@ -1,54 +1,137 @@
 export interface MenuItem {
-  name: string;
+  path: string;
   label: string;
   children?: MenuItem[];
 }
 
 export const adminMenus: MenuItem[] = [
   {
-    name: 'AppointmentManagement',
+    path: 'appointment-management',
     label: '预约管理',
     children: [
         {
-            name: 'InitialVisitAppointmentApproval',
+            path: '/admin/initial-visit-appointment-approval',
             label: '初访预约审核',
         },
         {
-            name: 'InitialVisitAppointmentRecords',
+            path: '/admin/initial-visit-appointment-records',
             label: '初访预约记录',
         },
     ]
   },
   {
-    name: 'questionnaireManagement',
+    path: 'questionnaire-management',
     label: '问卷管理',
     children: [
         {
-            name: 'QuestionList',
+            path: '/admin/question-list',
             label: '问题列表',
         },
         {
-            name: 'QuestionnaireList',
+            path: '/admin/questionnaire-list',
             label: '问卷列表',
         },
     ]
   },
   {
-    name: 'UserManagement',
+    path: '/admin/user-management',
     label: '用户管理',
   },
   {
-    name: 'ConsultationManagement',
+    path: '/admin/consultation-management',
     label: '咨询管理',
     children: [
         {
-            name: 'Statistics',
+            path: 'statistics',
             label: '统计分析',
         },
     ]
   },
   {
-    name: 'settings',
+    path: '/admin/admin-settings',
+    label: '设置',
+  },
+]
+
+export const counselorMenus: MenuItem[] = [
+  {
+    path: 'consultation-management',
+    label: '咨询管理',
+    children: [
+      {
+        path: '/counselor/consultation-records',
+        label: '咨询记录',
+      },
+      {
+        path: '/counselor/consultation-closure-report',
+        label: '咨询结案报告',
+      },
+    ]
+  },
+  {
+    path: '/counselor/duty-hours',
+    label: '值班时间',
+  },
+  {
+    path: '/counselor/counselor-settings',
+    label: '设置',
+  },
+
+]
+
+export const assistantMenus: MenuItem[] = [
+  {
+    path: 'consultation-management',
+    label: '咨询管理',
+    children: [
+      {
+        path: '/assistant/consultation-appointment-approval',
+        label: '咨询预约审核',
+      },
+      {
+        path: '/assistant/consultation-scheduleR-records',
+        label: '咨询安排记录',
+      },
+    ]
+  },
+  {
+    path: '/assistant/assistant-settings',
+    label: '设置',
+  },
+]
+
+export const visitorMenus: MenuItem[] = [
+  {
+    path: 'initial-visit-records',
+    label: '初访记录',
+  },
+  {
+    path: '/visitor/duty-hours',
+    label: '值班时间',
+  },
+  {
+    path: '/visitor/visitor-settings',
+    label: '设置',
+  },
+]
+
+export const studentMenus: MenuItem[] = [
+  {
+    path: 'appointment-management',
+    label: '预约管理',
+    children: [
+      {
+        path: '/student/initial-visit-appointment',
+        label: '初访预约',
+      },
+      {
+        path: '/student/appointment-records',
+        label: '预约记录',
+      },
+    ]
+  },
+  {
+    path: '/student/student-settings',
     label: '设置',
   },
 ]

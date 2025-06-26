@@ -8,8 +8,8 @@ const role = ref('')
 const router = useRouter()
 
 function onLogin() {
-  if (!username.value || !password.value || !role.value) {
-    // return
+  if (/*!username.value || !password.value ||*/ !role.value) {
+    return
   }
   // 实际应调用后端接口，这里直接模拟
   localStorage.setItem('user', JSON.stringify({ username: username.value, role: role.value }))

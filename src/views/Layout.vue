@@ -1,7 +1,7 @@
-<script setup lang="ts">
+<script setup>
 import { ref, computed, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { MenuItem, adminMenus } from '@/utils/menu/menus'
+import { adminMenus, counselorMenus, assistantMenus, visitorMenus, studentMenus } from '@/utils/menu/menus'
 
 const router = useRouter()
 const route = useRoute()
@@ -13,29 +13,20 @@ const menus = computed(() => {
     case 'admin':
       return adminMenus
     case 'counselor':
-      return [
-      ]
+      return counselorMenus
     case 'assistant':
-      return [
-      ]
+      return assistantMenus
     case 'visitor':
-      return [
-      ]
+      return visitorMenus
     case 'student':
-      return [
-      ]
+      return studentMenus
     default:
       return []
   }
 })
 
-function onMenuSelect(path: string) {
+function onMenuSelect(path) {
   router.push(path)
-}
-
-const logout = () => {
-  localStorage.removeItem('user')
-  router.push('/login')
 }
 
 watch(() => route.path, (val) => {
@@ -51,25 +42,23 @@ watch(() => route.path, (val) => {
       <div class="banner-content">
         <h1>心灵驿站</h1>
         <p>心理咨询，让心灵回归平静</p>
-        <el-button class="logout-btn" type="primary" @click="logout">退出登录</el-button>
       </div>
     </el-header>
     <el-container class="main-area">
       <!-- 侧边栏 -->
-      <el-aside width="120px" class="sidebar">
+      <el-aside class="sidebar">
         <el-menu :default-active="activeMenu" router unique-opened class="sidebar-menu">
-          <template v-for="item in menus" :key="item.name">
-            <el-sub-menu v-if="item.children" :index="item.name">
+          <template v-for="item in menus" :key="item.path">
+            <el-sub-menu v-if="item.children" :index="item.path">
               <template #title>
                 <span>{{ item.label }}</span>
               </template>
-              <el-menu-item v-for="child in item.children" :key="child.name" :index="child.name">
+              <el-menu-item v-for="child in item.children" :key="child.path" :index="child.path">
                 {{ child.label }}
               </el-menu-item>
             </el-sub-menu>
-
             <!-- 无 children 渲染为单条菜单 -->
-            <el-menu-item v-else :index="item.name">
+            <el-menu-item v-else :index="item.path">
               <span>{{ item.label }}</span>
             </el-menu-item>
           </template>
@@ -127,7 +116,7 @@ watch(() => route.path, (val) => {
   background-color: #ffffff;
   border-right: 1px solid #ebeef5;
   overflow-y: auto;
-  width: 120px;
+  width: 200px;
   min-width: 80px;
 }
 

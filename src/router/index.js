@@ -6,50 +6,144 @@ const router = createRouter({
     {
       path: '/test',
       name: 'Test',
-      component: () => import('@/views/Test.vue')
+      component: () => import('@/views/Test.vue'),
     },
     {
       path: '/login',
       name: 'Login',
-      component: () => import('@/views/Login.vue')
+      component: () => import('@/views/Login.vue'),
     },
     {
       path: '/admin',
       component: () => import('@/views/Layout.vue'),
       children: [
         {
-          path: '/initial-visit-appointment-approval',
+          path: 'initial-visit-appointment-approval',
           name: 'InitialVisitAppointmentApproval',
-          component: () => import('@/views/admin/InitialVisitAppointmentApproval.vue')
+          component: () => import('@/views/admin/InitialVisitAppointmentApproval.vue'),
         },
         {
-          path: '/initial-visit-appointment-records',
+          path: 'initial-visit-appointment-records',
           name: 'InitialVisitAppointmentRecords',
-          component: () => import('@/views/admin/InitialVisitAppointmentRecords.vue')
+          component: () => import('@/views/admin/InitialVisitAppointmentRecords.vue'),
         },
         {
-          path: '/question-list',
+          path: 'question-list',
           name: 'QuestionList',
-          component: () => import('@/views/admin/QuestionList.vue')
+          component: () => import('@/views/admin/QuestionList.vue'),
         },
         {
-          path: '/questionnaire-list',
+          path: 'questionnaire-list',
           name: 'QuestionnaireList',
-          component: () => import('@/views/admin/QuestionnaireList.vue')
+          component: () => import('@/views/admin/QuestionnaireList.vue'),
         },
         {
-          path: '/statistics',
+          path: 'statistics',
           name: 'Statistics',
-          component: () => import('@/views/admin/Statistics.vue')
+          component: () => import('@/views/admin/Statistics.vue'),
         },
         {
-          path: '/user-management',
+          path: 'user-management',
           name: 'UserManagement',
-          component: () => import('@/views/admin/UserManagement.vue')
+          component: () => import('@/views/admin/UserManagement.vue'),
+        },
+        {
+          path: 'admin-settings',
+          name: 'AdminSettings',
+          component: () => import('@/views/admin/Settings.vue'),
         },
       ]
-    }
-  ],
+    },
+    {
+      path: '/counselor',
+      component: () => import('@/views/Layout.vue'),
+      children: [
+        {
+          path: 'consultation-closure-report',
+          name: 'ConsultationClosureReport',
+          component: () => import('@/views/counselor/ConsultationClosureReport.vue'),
+        },
+        {
+          path: 'consultation-records',
+          name: 'ConsultationRecords',
+          component: () => import('@/views/counselor/ConsultationRecords.vue'),
+        },
+        {
+          path: 'duty-hours',
+          name: 'DutyHours',
+          component: () => import('@/views/counselor/DutyHours.vue'),
+        },
+        {
+          path: 'counselor-settings',
+          name: 'CounselorSettings',
+          component: () => import('@/views/counselor/Settings.vue'),
+        },
+      ]
+    },
+    {
+      path: '/assistant',
+      component: () => import('@/views/Layout.vue'),
+      children: [
+        {
+          path: 'consultation-appointment-approval',
+          name: 'ConsultationAppointmentApproval',
+          component: () => import('@/views/assistant/ConsultationAppointmentApproval.vue'),
+        },
+        {
+          path: 'consultation-schedule-records',
+          name: 'ConsultationScheduleRecords',
+          component: () => import('@/views/assistant/ConsultationScheduleRecords.vue'),
+        },
+        {
+          path: 'assistant-settings',
+          name: 'AssistantSettings',
+          component: () => import('@/views/assistant/Settings.vue'),
+        },
+      ]
+    },
+    {
+      path: '/visitor',
+      component: () => import('@/views/Layout.vue'),
+      children: [
+        {
+          path: 'duty-hours',
+          name: 'DutyHours',
+          component: () => import('@/views/visitor/DutyHours.vue'),
+        },
+        {
+          path: 'initial-visit-records',
+          name: 'InitialVisitRecords',
+          component: () => import('@/views/visitor/InitialVisitRecords.vue'),
+        },
+        {
+          path: 'visitor-settings',
+          name: 'VisitorSettings',
+          component: () => import('@/views/visitor/Settings.vue'),
+        },
+      ]
+    },
+    {
+      path: '/student',
+      component: () => import('@/views/Layout.vue'),
+      children: [
+        {
+          path: 'appointment-records',
+          name: 'AppointmentRecords',
+          component: () => import('@/views/student/AppointmentRecords.vue'),
+        },
+        {
+          path: 'initial-visit-appointment',
+          name: 'InitialVisitAppointment',
+          component: () => import('@/views/student/InitialVisitAppointment.vue'),
+        },
+        {
+          path: 'student-settings',
+          name: 'StudentSettings',
+          component: () => import('@/views/student/Settings.vue'),
+        },
+      ]
+    },
+  ]
 })
 
 // 登录拦截

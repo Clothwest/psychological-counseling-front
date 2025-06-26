@@ -7,13 +7,13 @@
 
 <style>
 #app {
-  max-width: none !important;
-  width: 100% !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  display: flex !important;
-  flex-direction: column !important;
-  grid-template-columns: none !important;
+  max-width: none;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  grid-template-columns: none;
 }
 
 </style>
