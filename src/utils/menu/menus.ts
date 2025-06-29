@@ -44,6 +44,20 @@ export const adminMenus: MenuItem[] = [
     ]
   },
   {
+    path: 'duty-hours-management',
+    label: '值班管理',
+    children: [
+      {
+        path: 'duty-hours-assignment',
+        label: '值班安排'
+      },
+      {
+        path: 'schedule',
+        label: '号源'
+      }
+    ]
+  },
+  {
     path: '/admin/user-management',
     label: '用户管理',
   },

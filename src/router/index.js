@@ -23,6 +23,11 @@ const router = createRouter({
       component: () => import('@/views/Layout.vue'),
       children: [
         {
+          path: 'duty-hours-assignment',
+          name: 'DutyHoursAssignment',
+          component: () => import('@/views/admin/DutyHourAssignment.vue')
+        },
+        {
           path: 'initial-visit-appointment-approval',
           name: 'InitialVisitAppointmentApproval',
           component: () => import('@/views/admin/InitialVisitAppointmentApproval.vue'),
@@ -41,6 +46,11 @@ const router = createRouter({
           path: 'questionnaire-list',
           name: 'QuestionnaireList',
           component: () => import('@/views/admin/QuestionnaireList.vue'),
+        },
+        {
+          path: 'schedule',
+          name: 'Schedule',
+          component: () => import('@/views/admin/Schedule.vue')
         },
         {
           path: 'statistics',

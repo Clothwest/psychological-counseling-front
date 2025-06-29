@@ -4,9 +4,9 @@ import { useRouter } from 'vue-router'
 import { loginRequest } from '@/utils/interceptor/request'
 import { ElMessage } from 'element-plus'
 
-const username = ref('admin')
+const username = ref('student')
 const password = ref('1')
-const role = ref('admin')
+const role = ref('student')
 const router = useRouter()
 
 function onLogin() {
@@ -24,6 +24,7 @@ function onLogin() {
         role: role.value,
         token: res.data.token
       }))
+      localStorage.setItem('avatarUrl', res.data.userInfo.avatar)
       router.push('/' + role.value)
     } else {
       // 登录失败，显示错误信息
@@ -72,6 +73,6 @@ function onLogin() {
   padding: 32px 24px;
   background: #fff;
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 </style>

@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
-import { changePasswordRequest } from '@/utils/interceptor/request'
+import { changePasswordRequest, uploadAvatarRequest } from '@/utils/interceptor/request'
 
 const router = useRouter()
 
@@ -40,9 +40,11 @@ const rules = {
 }
 
 const passwordFormRef = ref<InstanceType<typeof import('element-plus')['ElForm']>>()
+const avatarUrl = ref('')
 
 function logout() {
   localStorage.removeItem('user')
+  localStorage.removeItem('avatarUrl')
   router.push('/login')
 }
 
@@ -59,18 +61,53 @@ function onSubmit() {
         } else {
           ElMessage.error('密码修改失败，请重试')
         }
-      }).catch((error: any) => {
+      }).catch(() => {
         ElMessage.error('密码修改失败，请重试')
       })
     }
   })
 }
+
+function onAvatarUpload(file: File) {
+  const formData = new FormData()
+  formData.append('file', file)
+  uploadAvatarRequest(formData).then((res) => {
+    if (res.code === 200) {
+      ElMessage.success('头像上传成功')
+      localStorage.setItem('avatarUrl', res.data.avatarUrl)
+      loadAvatar()
+    } else {
+      ElMessage.error('头像上传失败')
+    }
+  }).catch(() => {
+    ElMessage.error('头像上传失败')
+  })
+}
+
+function loadAvatar() {
+  avatarUrl.value = localStorage.getItem('avatarUrl')
+}
+
+loadAvatar()
 </script>
 
 <template>
   <div class="settings-container">
     <el-card shadow="hover">
       <h2>账户设置</h2>
+
+      <div class="avatar-section">
+        <img :src="avatarUrl" alt="头像" class="avatar-img" v-if="avatarUrl" />
+        <el-upload
+          class="avatar-uploader"
+          :show-file-list="false"
+          :before-upload="onAvatarUpload"
+          accept="image/*"
+        >
+          <el-button type="primary">上传新头像</el-button>
+        </el-upload>
+      </div>
+
       <el-form
         ref="passwordFormRef"
         :model="passwordForm"
@@ -115,5 +152,17 @@ function onSubmit() {
 }
 .logout-btn {
   margin-left: 16px;
+}
+.avatar-section {
+  margin-bottom: 20px;
+  text-align: center;
+}
+.avatar-img {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 50%;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
 }
 </style>
