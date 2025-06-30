@@ -1,79 +1,117 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { getPendingInitialVisits, approveInitialVisit, rejectInitialVisit } from '@/utils/interceptor/request'
+import { fetchInitialVisitRecordsAdmin, changeAppointmentStatus } from '@/utils/interceptor/request'
 
-const visits = ref([])
+// 数据与状态
+const records = ref([])
 const loading = ref(false)
 const currentPage = ref(1)
 const pageSize = ref(5)
 const total = ref(0)
 
-function loadVisits() {
+// 问卷详情弹窗
+const showQuestionnaire = ref(false)
+const questionnaireItems = ref([])
+const questionnaireLoading = ref(false)
+
+// 加载待审核记录
+async function loadRecords(page = 1, size = 5) {
   loading.value = true
-  getPendingInitialVisits(currentPage.value, pageSize.value)
-    .then(res => {
-      if (res.code === 200) {
-        visits.value = res.data.records
-        total.value = res.data.total
-      } else {
-        ElMessage.error(res.message || '加载失败')
-      }
-    })
-    .catch(() => ElMessage.error('加载失败'))
-    .finally(() => loading.value = false)
+  try {
+    const res = await fetchInitialVisitRecordsAdmin(page, size)
+    if (res.code === 200 && res.data) {
+      const list = res.data.records.filter(r => r.status === 'SUBMITTED')
+      records.value = list.map(item => ({ ...item, totalScore: item.calculatedScore }))
+      total.value = list.length
+    } else {
+      ElMessage.error(res.message || '加载记录失败')
+    }
+  } catch {
+    ElMessage.error('加载记录失败')
+  } finally {
+    loading.value = false
+  }
 }
 
+// 分页回调
 function handlePageChange(page) {
   currentPage.value = page
-  loadVisits()
+  loadRecords(page, pageSize.value)
 }
-
 function handleSizeChange(size) {
   pageSize.value = size
-  currentPage.value = 1
-  loadVisits()
+  loadRecords(1, size)
 }
 
-function approve(id) {
-  ElMessageBox.confirm('确认批准此预约？', '操作确认', { type: 'success' })
-    .then(() => approveInitialVisit(id))
-    .then(() => {
-      ElMessage.success('已批准')
-      loadVisits()
-    })
-    .catch(() => {})
+// 审核操作
+function review(id, status) {
+  const action = status === 'APPROVED' ? '同意' : '拒绝'
+  ElMessageBox.confirm(
+    `确认要${action}该预约？`,
+    '审核确认',
+    { type: status === 'APPROVED' ? 'success' : 'warning' }
+  ).then(async () => {
+    try {
+      const res = await changeAppointmentStatus(id, status)
+      if (res.code === 200) {
+        ElMessage.success(`${action}成功`)
+        loadRecords(currentPage.value, pageSize.value)
+      } else {
+        ElMessage.error(res.message || `${action}失败`)
+      }
+    } catch {
+      ElMessage.error(`${action}失败`)
+    }
+  }).catch(() => {})
 }
 
-function reject(id) {
-  ElMessageBox.confirm('确认拒绝此预约？', '操作确认', { type: 'warning' })
-    .then(() => rejectInitialVisit(id))
-    .then(() => {
-      ElMessage.success('已拒绝')
-      loadVisits()
-    })
-    .catch(() => {})
+// 查看问卷详情
+function viewQuestionnaire(record) {
+  questionnaireLoading.value = true
+  showQuestionnaire.value = true
+  try {
+    const list = JSON.parse(record.questionnaireContent)
+    questionnaireItems.value = list.map(q => ({ questionText: q.questionText, answer: q.studentAnswer }))
+  } catch {
+    ElMessage.error('解析问卷失败')
+  } finally {
+    questionnaireLoading.value = false
+  }
 }
 
-onMounted(loadVisits)
+onMounted(() => loadRecords(currentPage.value, pageSize.value))
 </script>
 
 <template>
-  <div class="approval-container">
-    <el-card>
+  <div class="admin-audit-container">
+    <el-card shadow>
       <h2>初访预约审核</h2>
-      <el-table :data="visits" v-loading="loading" stripe border>
-        <el-table-column prop="id" label="ID" width="80" />
+      <el-table :data="records" v-loading="loading" stripe border>
+        <el-table-column type="index" label="序号" width="60" />
+        <el-table-column prop="studentUsername" label="用户名" />
         <el-table-column prop="studentName" label="学生姓名" />
-        <el-table-column prop="appointmentTime" label="预约时间" />
-        <el-table-column prop="reason" label="预约原因" />
-        <el-table-column label="操作" width="180">
+        <el-table-column prop="interviewerName" label="初访员" />
+        <el-table-column label="提交时间">
           <template #default="{ row }">
-            <el-button type="success" size="small" @click="approve(row.id)">批准</el-button>
-            <el-button type="danger" size="small" @click="reject(row.id)">拒绝</el-button>
+            {{ row.submittedTime.slice(0,10) + ' ' + row.submittedTime.slice(11,19) }}
+          </template>
+        </el-table-column>
+        <el-table-column label="预约时间">
+          <template #default="{ row }">
+            {{ row.requestedTime.slice(0,10) + ' ' + row.requestedTime.slice(11,19) }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="totalScore" label="总得分" />
+        <el-table-column label="操作" width="240">
+          <template #default="{ row }">
+            <el-button size="small" @click="viewQuestionnaire(row)">查看问卷</el-button>
+            <el-button size="small" type="success" @click="review(row.id, 'APPROVED')">同意</el-button>
+            <el-button size="small" type="danger" @click="review(row.id, 'CANCELED')">拒绝</el-button>
           </template>
         </el-table-column>
       </el-table>
+
       <el-pagination
         class="pagination"
         background
@@ -86,11 +124,23 @@ onMounted(loadVisits)
         @size-change="handleSizeChange"
       />
     </el-card>
+
+    <!-- 问卷详情弹窗 -->
+    <el-dialog v-model="showQuestionnaire" title="学生问卷详情" width="600px">
+      <el-table :data="questionnaireItems" v-loading="questionnaireLoading" stripe border>
+        <el-table-column type="index" label="序号" width="60" />
+        <el-table-column prop="questionText" label="问题" />
+        <el-table-column prop="answer" label="回答分" width="100" />
+      </el-table>
+      <template #footer>
+        <el-button type="primary" @click="showQuestionnaire=false">关闭</el-button>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
 <style scoped>
-.approval-container {
+.admin-audit-container {
   padding: 24px;
 }
 .pagination {
