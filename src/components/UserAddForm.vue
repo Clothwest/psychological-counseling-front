@@ -1,6 +1,6 @@
 <script setup>
 import { ref, watch } from 'vue'
-import { ElMessage } from 'element-plus'
+import { ElMain, ElMessage } from 'element-plus'
 import { addUser, updateUser } from '@/utils/interceptor/request'
 
 const props = defineProps({
@@ -58,7 +58,7 @@ async function submit() {
 
       if (props.isEdit) {
         if (!isEditingPassword.value) delete payload.password
-        await updateUser(
+        const res = await updateUser(
           payload.id,
           payload.name,
           payload.phone,
@@ -67,8 +67,13 @@ async function submit() {
           payload.gender.toUpperCase(),
           payload.password
         )
+        if (res.code !== 200) {
+          ElMessage.error('失败')
+        } else {
+          ElMessage.success('更新成功')
+        }
       } else {
-        await addUser(
+        const res = await addUser(
           payload.username,
           payload.name,
           payload.phone,
@@ -77,9 +82,12 @@ async function submit() {
           payload.gender.toUpperCase(),
           payload.password
         )
+        if (res.code !== 200) {
+          ElMessage.error('失败')
+        } else {
+          ElMessage.success('添加成功')
+        }
       }
-
-
       emit('added')
     } catch {
     }

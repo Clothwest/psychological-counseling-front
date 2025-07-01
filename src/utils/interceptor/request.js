@@ -54,7 +54,29 @@ export const createSlots = (startDate, endDate) => interceptor.post('/api/admin/
 export const deleteSlot = (id) => interceptor.delete('/api/admin/' + id)
 // 预约管理-student
 export const fetchAvailableSlots = (date) => interceptor.get('/api/student/initialVisit/available', { params: { queryDate: date } })
-export const createAppointment = (id, staffId, requestedDate, requestedTime, answers) => interceptor.post('/api/student/initialVisit/submit', {scheduleSlotId: id, assignedInterviewerId: staffId, requestedDate: requestedDate, requestedTime: requestedTime, answers: answers })
+export const createAppointment = (id, staffId, requestedDate, requestedTime, answers) => interceptor.post('/api/student/initialVisit/submit', { scheduleSlotId: id, assignedInterviewerId: staffId, requestedDate: requestedDate, requestedTime: requestedTime, answers: answers })
 export const getQuestionnaire = () => interceptor.get('/api/student/questionnaires/random')
-export const fetchInitialVisitRecords = (currentPage,  pageSize) => interceptor.get('/api/student/initialVisit', { params: { page: currentPage, size: pageSize}})
+export const fetchInitialVisitRecords = (currentPage, pageSize) => interceptor.get('/api/student/initialVisit', { params: { page: currentPage, size: pageSize } })
 export const cancelAppointment = (id) => interceptor.post('/api/student/initialVisit/' + id + '/cancel')
+// 初访记录-visitor
+export const fetchApprovedAppointments = (currentPage, pageSize) => interceptor.get('/api/interviewer/applications', { params: { pageNum: currentPage, pageSize: pageSize } })
+export const submitVisitRecord = (applicationId, crisisLevel, problemType, visitTime, conclusion) => interceptor.post('/api/interviewer/visit-records', {
+    applicationId: applicationId,
+    crisisLevel: crisisLevel,
+    problemType: problemType,
+    visitTime: visitTime,
+    conclusion: conclusion
+})
+export const fetchCompletedRecords = (currentPage, pageSize) => interceptor.get('/api/interviewer/visit-records', { params: { pageNum: currentPage, pageSize: pageSize } })
+// 值班时间-visitor
+export const fetchCounselorSchedules = () => interceptor.get('/api/my-schedule/templates')
+export const fetchCounselorSlots = (currentPage, pageSize) => interceptor.get('/api/my-schedule/slots', { params: { pageNum: currentPage, pageSize: pageSize } })
+// 咨询预约审核-assistant
+export const fetchAssistantAppointments = () => interceptor.get('/api/assistant/pending-cases')
+export const approveAppointment = (initialVisitRecordId, counselorId, firstSessionStartTime) => interceptor.post('/api/assistant/counseling-cases', {
+    initialVisitRecordId: initialVisitRecordId,
+    counselorId: counselorId,
+    firstSessionStartTime: firstSessionStartTime,
+    location: "",
+    totalSessions: 8
+})

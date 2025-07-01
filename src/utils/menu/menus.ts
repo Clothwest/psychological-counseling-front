@@ -27,10 +27,6 @@ export const adminMenus: MenuItem[] = [
             path: '/admin/question-list',
             label: '问题列表',
         },
-        {
-            path: '/admin/questionnaire-list',
-            label: '问卷列表',
-        },
     ]
   },
   {

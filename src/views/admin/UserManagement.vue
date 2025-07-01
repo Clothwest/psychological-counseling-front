@@ -72,7 +72,7 @@ function handleDelete(row) {
 
 function onSaved() {
   showDialog.value = false
-  ElMessage.success(isEdit.value ? '更新成功' : '添加成功')
+  // ElMessage.success(isEdit.value ? '更新成功' : '添加成功')
   loadUsers()
 }
 
