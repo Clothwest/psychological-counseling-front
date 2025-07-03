@@ -107,7 +107,7 @@ onMounted(() => loadRecords(currentPage.value, pageSize.value))
           <template #default="{ row }">
             <el-button size="small" @click="viewQuestionnaire(row)">查看问卷</el-button>
             <el-button size="small" type="success" @click="review(row.id, 'APPROVED')">同意</el-button>
-            <el-button size="small" type="danger" @click="review(row.id, 'CANCELED')">拒绝</el-button>
+            <el-button size="small" type="danger" @click="review(row.id, 'REJECTED')">拒绝</el-button>
           </template>
         </el-table-column>
       </el-table>

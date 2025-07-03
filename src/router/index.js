@@ -25,7 +25,12 @@ const router = createRouter({
         {
           path: 'duty-hours-assignment',
           name: 'DutyHoursAssignment',
-          component: () => import('@/views/admin/DutyHourAssignment.vue')
+          component: () => import('@/views/admin/DutyHourAssignment.vue'),
+        },
+        {
+          path: 'extra-consultation-approval',
+          name: 'ExtraConsultationApproval',
+          component: () => import('@/views/admin/ExtraConsultationApproval.vue'),
         },
         {
           path: 'initial-visit-appointment-approval',
@@ -86,7 +91,7 @@ const router = createRouter({
         },
         {
           path: 'duty-hours',
-          name: 'DutyHours',
+          name: 'CounselorDutyHours',
           component: () => import('@/views/counselor/DutyHours.vue'),
         },
         {
@@ -125,7 +130,7 @@ const router = createRouter({
       children: [
         {
           path: 'duty-hours',
-          name: 'DutyHours',
+          name: 'VisitorDutyHours',
           component: () => import('@/views/visitor/DutyHours.vue'),
         },
         {

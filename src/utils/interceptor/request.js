@@ -52,6 +52,12 @@ export const fetchStaffList = (id) => interceptor.get('/api/admin/users/' + id)
 export const fetchSlots = (currentPage, pageSize) => interceptor.get('/api/admin/schedule-slots/pageQuery', { params: { pageNum: currentPage, pageSize: pageSize } })
 export const createSlots = (startDate, endDate) => interceptor.post('/api/admin/schedule-slots/generate', { startDate: startDate, endDate: endDate })
 export const deleteSlot = (id) => interceptor.delete('/api/admin/' + id)
+// 追加咨询审核-admin
+export const fetchAppendRequests = (currentPage, pageSize) => interceptor.get('/api/admin/case-extensions/pending', { params: { pageNum: currentPage, pageSize: pageSize } })
+export const approveAppendRequest = (requestId) => interceptor.post('/api/admin/case-extensions/' + requestId + '/approve')
+export const rejectAppendRequest = (requestId) => interceptor.post('/api/admin/case-extensions/' + requestId + '/reject')
+// 统计分析-admin
+export const fetchReportStats = (data) => interceptor.get('/api/admin/stats/cases', { params: data })
 // 预约管理-student
 export const fetchAvailableSlots = (date) => interceptor.get('/api/student/initialVisit/available', { params: { queryDate: date } })
 export const createAppointment = (id, staffId, requestedDate, requestedTime, answers) => interceptor.post('/api/student/initialVisit/submit', { scheduleSlotId: id, assignedInterviewerId: staffId, requestedDate: requestedDate, requestedTime: requestedTime, answers: answers })
@@ -70,7 +76,7 @@ export const submitVisitRecord = (applicationId, crisisLevel, problemType, visit
 export const fetchCompletedRecords = (currentPage, pageSize) => interceptor.get('/api/interviewer/visit-records', { params: { pageNum: currentPage, pageSize: pageSize } })
 // 值班时间-visitor
 export const fetchCounselorSchedules = () => interceptor.get('/api/my-schedule/templates')
-export const fetchCounselorSlots = (currentPage, pageSize) => interceptor.get('/api/my-schedule/slots', { params: { pageNum: currentPage, pageSize: pageSize } })
+export const fetchCounselorSlots = (currentPage, pageSize) => interceptor.get('/api/interviewer/slots', { params: { pageNum: currentPage, pageSize: pageSize, status: "BOOKED" } })
 // 咨询预约审核-assistant
 export const fetchAssistantAppointments = () => interceptor.get('/api/assistant/pending-cases')
 export const approveAppointment = (initialVisitRecordId, counselorId, firstSessionStartTime) => interceptor.post('/api/assistant/counseling-cases', {
@@ -80,3 +86,17 @@ export const approveAppointment = (initialVisitRecordId, counselorId, firstSessi
     location: "",
     totalSessions: 8
 })
+export const fetchCounselorSlotsAssistant = (date) => interceptor.get('/api/assistant/available', { params: { queryDate: date } })
+// 咨询安排记录-assistant
+export const fetchAssistantConsultations = (currentPage, pageSize) => interceptor.get('/api/assistant/my-counseling-cases', { params: { pageNum: currentPage, pageSize: pageSize, status: "IN_PROGRESS" } })
+// 值班时间-counselor
+export const fetchCounselorSlotsCounselor = (currentPage, pageSize) => interceptor.get('/api/counselor/slots', { params: { pageNum: currentPage, pageSize: pageSize, status: "BOOKED" } })
+// 咨询个案-counselor
+export const fetchCounselorCases = (currentPage, pageSize) => interceptor.get('/api/counselor/cases', { params: { pageNum: currentPage, pageSize: pageSize, status: "IN_PROGRESS" } })
+export const fetchCaseSessions = (caseId) => interceptor.get('/api/counselor/cases/' + caseId)
+export const submitCaseRecord = (sessionId, status, counselorNotes) => interceptor.put('/api/counselor/sessions/' + sessionId, { status: status, counselorNotes: counselorNotes })
+export const submitCaseAppend = (caseId, additionalSessions, reason) => interceptor.post('/api/counselor/cases/' + caseId + '/request-extension', { additionalSessions: additionalSessions, reason: reason})
+export const fetchCaseReport = (caseId) => interceptor.get('/api/counselor/cases/' + caseId)
+export const saveCaseReport = (data) => interceptor.post('/api/counselor/case-reports', data)
+// 咨询结案报告-counselor
+export const fetchReportList = (currentPage, pageSize) => interceptor.get('/api/counselor/case-reports', { params: { pageNum: currentPage, pageSize: pageSize } })

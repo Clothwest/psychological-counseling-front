@@ -9,34 +9,38 @@ export const adminMenus: MenuItem[] = [
     path: 'appointment-management',
     label: '预约管理',
     children: [
-        {
-            path: '/admin/initial-visit-appointment-approval',
-            label: '初访预约审核',
-        },
-        {
-            path: '/admin/initial-visit-appointment-records',
-            label: '初访预约记录',
-        },
+      {
+        path: '/admin/initial-visit-appointment-approval',
+        label: '初访预约审核',
+      },
+      {
+        path: '/admin/initial-visit-appointment-records',
+        label: '初访预约记录',
+      },
     ]
   },
   {
     path: 'questionnaire-management',
     label: '问卷管理',
     children: [
-        {
-            path: '/admin/question-list',
-            label: '问题列表',
-        },
+      {
+        path: '/admin/question-list',
+        label: '问题列表',
+      },
     ]
   },
   {
     path: '/admin/consultation-management',
     label: '咨询管理',
     children: [
-        {
-            path: 'statistics',
-            label: '统计分析',
-        },
+      {
+        path: 'extra-consultation-approval',
+        label: '追加咨询审核',
+      },
+      {
+        path: 'statistics',
+        label: '统计分析',
+      },
     ]
   },
   {
@@ -70,7 +74,7 @@ export const counselorMenus: MenuItem[] = [
     children: [
       {
         path: '/counselor/consultation-records',
-        label: '咨询记录',
+        label: '咨询个案',
       },
       {
         path: '/counselor/consultation-closure-report',
@@ -99,7 +103,7 @@ export const assistantMenus: MenuItem[] = [
         label: '咨询预约审核',
       },
       {
-        path: '/assistant/consultation-scheduleR-records',
+        path: '/assistant/consultation-schedule-records',
         label: '咨询安排记录',
       },
     ]

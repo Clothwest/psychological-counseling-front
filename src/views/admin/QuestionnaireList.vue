@@ -82,17 +82,9 @@ onMounted(() => {
         </el-table-column>
       </el-table>
 
-      <el-pagination
-        class="pagination"
-        background
-        layout="sizes, prev, pager, next, jumper, ->, total"
-        :total="total"
-        :page-size="pageSize"
-        :current-page="currentPage"
-        :page-sizes="[5, 10, 20]"
-        @current-change="handlePageChange"
-        @size-change="handleSizeChange"
-      />
+      <el-pagination class="pagination" background layout="sizes, prev, pager, next, jumper, ->, total" :total="total"
+        :page-size="pageSize" :current-page="currentPage" :page-sizes="[5, 10, 20]" @current-change="handlePageChange"
+        @size-change="handleSizeChange" />
     </el-card>
 
     <el-dialog v-model="showDetail" width="600px" title="问卷详情" :close-on-click-modal="false">
@@ -112,6 +104,7 @@ onMounted(() => {
 .questionnaire-list-container {
   padding: 24px;
 }
+
 .pagination {
   margin-top: 16px;
   text-align: right;
