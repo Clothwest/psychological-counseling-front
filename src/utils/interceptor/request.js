@@ -58,6 +58,8 @@ export const approveAppendRequest = (requestId) => interceptor.post('/api/admin/
 export const rejectAppendRequest = (requestId) => interceptor.post('/api/admin/case-extensions/' + requestId + '/reject')
 // 统计分析-admin
 export const fetchReportStats = (data) => interceptor.get('/api/admin/stats/cases', { params: data })
+export const exportReportStats = () => interceptor.get('/api/admin/stats/counselor-workload/export-excel', { responseType: 'blob' })
+export const exportCaseReports = (data) => interceptor.get('/api/admin/stats/cases/export-reports', { params: data, responseType: 'arraybuffer' })
 // 预约管理-student
 export const fetchAvailableSlots = (date) => interceptor.get('/api/student/initialVisit/available', { params: { queryDate: date } })
 export const createAppointment = (id, staffId, requestedDate, requestedTime, answers) => interceptor.post('/api/student/initialVisit/submit', { scheduleSlotId: id, assignedInterviewerId: staffId, requestedDate: requestedDate, requestedTime: requestedTime, answers: answers })
@@ -92,7 +94,7 @@ export const fetchAssistantConsultations = (currentPage, pageSize) => intercepto
 // 值班时间-counselor
 export const fetchCounselorSlotsCounselor = (currentPage, pageSize) => interceptor.get('/api/counselor/slots', { params: { pageNum: currentPage, pageSize: pageSize, status: "BOOKED" } })
 // 咨询个案-counselor
-export const fetchCounselorCases = (currentPage, pageSize) => interceptor.get('/api/counselor/cases', { params: { pageNum: currentPage, pageSize: pageSize, status: "IN_PROGRESS" } })
+export const fetchCounselorCases = (data) => interceptor.get('/api/counselor/cases', { params: data })
 export const fetchCaseSessions = (caseId) => interceptor.get('/api/counselor/cases/' + caseId)
 export const submitCaseRecord = (sessionId, status, counselorNotes) => interceptor.put('/api/counselor/sessions/' + sessionId, { status: status, counselorNotes: counselorNotes })
 export const submitCaseAppend = (caseId, additionalSessions, reason) => interceptor.post('/api/counselor/cases/' + caseId + '/request-extension', { additionalSessions: additionalSessions, reason: reason})
@@ -100,3 +102,4 @@ export const fetchCaseReport = (caseId) => interceptor.get('/api/counselor/cases
 export const saveCaseReport = (data) => interceptor.post('/api/counselor/case-reports', data)
 // 咨询结案报告-counselor
 export const fetchReportList = (currentPage, pageSize) => interceptor.get('/api/counselor/case-reports', { params: { pageNum: currentPage, pageSize: pageSize } })
+export const exportSingleReport = (caseId) => interceptor.get('/api/counselor/case-reports/' + caseId + '/export', { responseType: 'arraybuffer' })

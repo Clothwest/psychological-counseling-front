@@ -1,7 +1,7 @@
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
-import { fetchReportStats } from '@/utils/interceptor/request'
+import { fetchReportStats, exportReportStats, exportCaseReports } from '@/utils/interceptor/request'
 
 // 搜索条件
 const filters = reactive({
@@ -26,7 +26,6 @@ async function loadStats() {
     const payload = { ...filters }
     const res = await fetchReportStats(payload)
     if (res.code === 200 && res.data && Array.isArray(res.data.records)) {
-      // 直接使用后台字段
       stats.value = res.data.records
       total.value = res.data.total
     } else {
@@ -39,10 +38,44 @@ async function loadStats() {
   }
 }
 
-// 搜索
+// 查询
 function doSearch() {
   filters.pageNum = 1
   loadStats()
+}
+
+// 导出当前页统计的 Excel
+async function exportExcel() {
+  try {
+    const payload = { ...filters }
+    const blobData = await exportReportStats(payload)
+    const blob = new Blob([blobData], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
+    const url = window.URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = `统计分析_${filters.startDate || 'all'}_${filters.endDate || 'all'}.xlsx`
+    link.click()
+    window.URL.revokeObjectURL(url)
+  } catch {
+    ElMessage.error('导出 Excel 失败')
+  }
+}
+
+// 批量下载结案报告 ZIP
+async function exportAllReports() {
+  try {
+    const payload = { ...filters }
+    const blobData = await exportCaseReports(payload)
+    const blob = new Blob([blobData], { type: 'application/zip' })
+    const url = window.URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = `case_reports_${new Date().toISOString().slice(0,10)}.zip`
+    link.click()
+    window.URL.revokeObjectURL(url)
+  } catch {
+    ElMessage.error('下载 ZIP 失败')
+  }
 }
 
 // 分页事件
@@ -69,6 +102,8 @@ onMounted(() => loadStats())
       <el-date-picker v-model="filters.startDate" type="date" placeholder="开始日期" value-format="YYYY-MM-DD" style="margin-right:8px;" />
       <el-date-picker v-model="filters.endDate" type="date" placeholder="结束日期" value-format="YYYY-MM-DD" style="margin-right:8px;" />
       <el-button type="primary" @click="doSearch">查询</el-button>
+      <el-button type="success" @click="exportExcel" style="margin-left:8px;">导出统计</el-button>
+      <el-button type="warning" @click="exportAllReports" style="margin-left:8px;">批量下载报告 ZIP</el-button>
     </div>
 
     <el-table :data="stats" v-loading="loading" stripe border style="width:100%; margin-top:16px;">

@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
-import { fetchReportList } from '@/utils/interceptor/request'
+import { fetchReportList, exportSingleReport } from '@/utils/interceptor/request'
 
 // 报告列表与分页
 const reports = ref([])
@@ -16,8 +16,7 @@ async function loadReports(page = 1, size = 10) {
   try {
     const res = await fetchReportList(page, size)
     if (res.code === 200 && res.data && Array.isArray(res.data.records)) {
-      // 后端返回 records 中每项包含 reportContent
-      reports.value = res.data.records.map(item => ({ ...item.reportContent }))
+      reports.value = res.data.records.map(item => ({ ...item.reportContent, caseId: item.caseId }))
       totalReports.value = res.data.total ?? reports.value.length
     } else {
       ElMessage.error(res.message || '加载报告失败')
@@ -29,11 +28,28 @@ async function loadReports(page = 1, size = 10) {
   }
 }
 
+// 下载单个报告 Word
+async function downloadReport(caseId) {
+  try {
+    const arrayBuffer = await exportSingleReport(caseId)
+    const blob = new Blob([arrayBuffer], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' })
+    const url = window.URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = `report_${caseId}.docx`
+    link.click()
+    window.URL.revokeObjectURL(url)
+  } catch {
+    ElMessage.error('下载报告失败')
+  }
+}
+
 // 分页控制
 function handlePageChange(page) {
   currentPage.value = page
   loadReports(page, pageSize.value)
 }
+
 function handleSizeChange(size) {
   pageSize.value = size
   currentPage.value = 1
@@ -56,6 +72,11 @@ onMounted(() => loadReports(currentPage.value, pageSize.value))
       <el-table-column prop="problemType" label="问题类型" />
       <el-table-column prop="totalSessions" label="咨询总次数" />
       <el-table-column prop="selfEvaluation" label="咨询效果自评" />
+      <el-table-column label="操作" width="120">
+        <template #default="{ row }">
+          <el-button size="small" type="primary" @click="downloadReport(row.caseId)">下载报告</el-button>
+        </template>
+      </el-table-column>
     </el-table>
 
     <el-pagination
