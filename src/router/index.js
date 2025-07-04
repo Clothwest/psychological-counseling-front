@@ -48,11 +48,6 @@ const router = createRouter({
           component: () => import('@/views/admin/QuestionList.vue'),
         },
         {
-          path: 'questionnaire-list',
-          name: 'QuestionnaireList',
-          component: () => import('@/views/admin/QuestionnaireList.vue'),
-        },
-        {
           path: 'schedule',
           name: 'Schedule',
           component: () => import('@/views/admin/Schedule.vue')

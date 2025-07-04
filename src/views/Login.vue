@@ -4,9 +4,9 @@ import { useRouter } from 'vue-router'
 import { loginRequest } from '@/utils/interceptor/request'
 import { ElMessage } from 'element-plus'
 
-const username = ref('PPP')
-const password = ref('PPP')
-const role = ref('counselor')
+const username = ref('')
+const password = ref('')
+const role = ref('')
 const router = useRouter()
 
 function onLogin() {

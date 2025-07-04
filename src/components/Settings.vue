@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
-import { changePasswordRequest, uploadAvatarRequest } from '@/utils/interceptor/request'
+import { changePasswordRequest, uploadAvatarRequest, logoutRequest } from '@/utils/interceptor/request'
 
 const router = useRouter()
 
@@ -43,9 +43,13 @@ const passwordFormRef = ref<InstanceType<typeof import('element-plus')['ElForm']
 const avatarUrl = ref('')
 
 function logout() {
-  localStorage.removeItem('user')
-  localStorage.removeItem('avatarUrl')
-  router.push('/login')
+  logoutRequest().then(() => {
+    localStorage.removeItem('user')
+    localStorage.removeItem('avatarUrl')
+    router.push('/login')
+  }).catch(() => {
+      ElMessage.error('退出登录失败，请稍后再试')
+    })
 }
 
 function onSubmit() {

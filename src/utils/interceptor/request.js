@@ -1,6 +1,7 @@
 import interceptor from "./interceptors"
 // 登录和个人设置
 export const loginRequest = (data) => interceptor.post('/api/auth/login', data)
+export const logoutRequest = () => interceptor.post('/api/auth/logout')
 export const changePasswordRequest = (data) => interceptor.post('/api/users/changePassword', data)
 export const uploadAvatarRequest = (file) => interceptor.post('/api/users/avatar', file)
 // 用户管理-admin
@@ -16,7 +17,7 @@ export const fetchInitialVisitRecordsAdmin = (currentPage, pageSize) => intercep
 export const updateAppointment = (id, scheduleSlotId) => interceptor.put('/api/admin/initial-visit-applications/' + id, { scheduleSlotId: scheduleSlotId })
 export const cancelAppointmentAdmin = (id) => interceptor.post('/api/admin/initial-visit-applications/' + id + '/cancel')
 // 问卷管理-admin
-export const fetchQuestions = (currentPage, pageSize) => interceptor.get('/api/admin/questionnaires', { params: { pageNum: currentPage, pageSize: pageSize } })
+export const fetchQuestions = (data) => interceptor.get('/api/admin/questionnaires', { params: data })
 export const deleteQuestion = (id) => interceptor.delete('/api/admin/questionnaires/' + id)
 export const updateQuestion = (id, questionText) => interceptor.put('/api/admin/questionnaires/' + id, { questionText: questionText })
 export const addQuestion = (questionText) => interceptor.post('/api/admin/questionnaires', { questionText: questionText })
