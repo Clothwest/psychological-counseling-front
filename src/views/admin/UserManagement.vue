@@ -2,7 +2,7 @@
 import { ref, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import UserAddForm from '@/components/UserAddForm.vue'
-import { fetchUsers, deleteUser, updateUser } from '@/utils/interceptor/request'
+import { fetchUsers, deleteUser } from '@/utils/interceptor/request'
 
 const users = ref([])
 const total = ref(0)
@@ -10,10 +10,12 @@ const loading = ref(false)
 const pageSize = ref(5)
 const currentPage = ref(1)
 const username = ref('')
+
 const showDialog = ref(false)
 const isEdit = ref(false)
 const editingUser = ref(null)
 
+// 加载用户列表
 async function loadUsers() {
   loading.value = true
   try {
@@ -31,29 +33,41 @@ async function loadUsers() {
   }
 }
 
+// 分页回调
 function handlePageChange(page) {
   currentPage.value = page
   loadUsers()
 }
-
 function handleSizeChange(size) {
   pageSize.value = size
   currentPage.value = 1
   loadUsers()
 }
 
+// 搜索
+function onSearch() {
+  currentPage.value = 1
+  loadUsers()
+}
+
+// 添加
 function openAdd() {
   isEdit.value = false
-  editingUser.value = { username: '', name: '', phone: '', role: '', college: '', gender: '', password: '' }
+  editingUser.value = {
+    username: '', name: '', phone: '', role: '',
+    college: '', gender: '', password: ''
+  }
   showDialog.value = true
 }
 
+// 编辑
 function openEdit(row) {
   isEdit.value = true
   editingUser.value = { ...row }
   showDialog.value = true
 }
 
+// 删除
 function handleDelete(row) {
   ElMessageBox.confirm(
     `确认要删除用户 “${row.username}”-“${row.name}” 吗？`,
@@ -70,24 +84,26 @@ function handleDelete(row) {
   })
 }
 
+// 弹窗保存后的回调
 function onSaved() {
   showDialog.value = false
-  // ElMessage.success(isEdit.value ? '更新成功' : '添加成功')
   loadUsers()
 }
-
 
 onMounted(loadUsers)
 </script>
 
 <template>
   <div class="user-manage-container">
+    <!-- 工具栏：搜索框 + 搜索按钮 + 添加按钮 -->
     <div class="toolbar">
-      <el-input v-model="username" placeholder="搜索" clearable @clear="() => { currentPage.value = 1; loadUsers() }"
-        @keyup.enter="() => { currentPage.value = 1; loadUsers() }" style="width: 240px;" />
+      <el-input v-model="username" placeholder="搜索用户名" clearable @clear="onSearch" @keyup.enter="onSearch"
+        style="width: 240px;" />
+      <el-button @click="onSearch">搜索</el-button>
       <el-button type="primary" @click="openAdd">添加用户</el-button>
     </div>
 
+    <!-- 用户列表表格 -->
     <el-table :data="users" border stripe v-loading="loading" style="width: 100%;">
       <el-table-column prop="username" label="用户名" width="80" />
       <el-table-column prop="name" label="姓名" />
@@ -107,14 +123,15 @@ onMounted(loadUsers)
       </el-table-column>
     </el-table>
 
+    <!-- 分页 -->
     <el-pagination class="pagination" background layout="sizes, prev, pager, next, jumper, ->, total" :total="total"
       :page-size="pageSize" :current-page="currentPage" :page-sizes="[5, 10, 20, 50]" @current-change="handlePageChange"
       @size-change="handleSizeChange" />
 
+    <!-- 新增/编辑弹窗 -->
     <el-dialog :title="isEdit ? '编辑用户' : '添加用户'" v-model="showDialog" width="500px" destroy-on-close>
       <UserAddForm :initUser="editingUser" :isEdit="isEdit" @added="onSaved" @cancel="showDialog = false" />
     </el-dialog>
-
   </div>
 </template>
 
@@ -132,7 +149,11 @@ onMounted(loadUsers)
 }
 
 .toolbar .el-input {
-  margin-right: 16px;
+  margin-right: 8px;
+}
+
+.toolbar .el-button {
+  margin-right: 8px;
 }
 
 .pagination {
